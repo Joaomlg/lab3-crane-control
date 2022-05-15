@@ -1,6 +1,10 @@
-from . import ICraneController
+from integration.ICraneController import ICraneController
+from utils.SingletonMetaClass import AbstractSingletonMetaClass
 
-class PhysicalCraneController(ICraneController):
+class PhysicalCraneController(ICraneController, metaclass=AbstractSingletonMetaClass):
+  def __init__(self):
+    pass
+
   def reset_crane() -> None:
     raise NotImplementedError
 
