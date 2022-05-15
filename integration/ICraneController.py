@@ -2,6 +2,10 @@ from abc import ABC, abstractmethod
 
 class ICraneController(ABC):
   @abstractmethod
+  def reset_crane() -> None:
+    raise NotImplementedError
+
+  @abstractmethod
   def rotate_spear(degrees: float) -> None:
     raise NotImplementedError
 
