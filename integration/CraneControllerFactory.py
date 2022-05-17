@@ -9,7 +9,7 @@ class Variant(Enum):
   Simulated = 'simulated'
 
 class CraneControllerFactory:
-  @classmethod
+  @staticmethod
   def create(variant: Variant) -> ICraneController:
     if variant == Variant.Physical:
       return PhysicalCraneController()
