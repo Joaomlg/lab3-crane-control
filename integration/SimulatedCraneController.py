@@ -5,26 +5,26 @@ class SimulatedCraneController(ICraneController, metaclass=AbstractSingletonMeta
   def __init__(self):
     pass
 
-  def reset_crane() -> None:
+  def reset_crane(self) -> None:
     raise NotImplementedError
 
-  def rotate_spear(degrees: float) -> None:
+  def rotate_spear(self, degrees: float) -> None:
     raise NotImplementedError
 
-  def move_appliance(height: float) -> None:
+  def move_appliance(self, height: float) -> None:
     raise NotImplementedError
 
-  def toggle_electromagnet(state: bool) -> None:
+  def toggle_electromagnet(self, state: bool) -> None:
     raise NotImplementedError
 
-  def get_spear_angle() -> float:
+  def get_spear_angle(self) -> float:
     raise NotImplementedError
   
-  def get_appliance_height() -> float:
+  def get_appliance_height(self) -> float:
     raise NotImplementedError
 
-  def get_electromagnet_state() -> bool:
+  def get_electromagnet_state(self) -> bool:
     raise NotImplementedError
   
-  def get_ultrasonic_distance() -> float:
+  def get_ultrasonic_distance(self) -> float:
     raise NotImplementedError
