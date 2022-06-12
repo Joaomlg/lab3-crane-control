@@ -21,7 +21,7 @@ class TempICraneController(ABC):
 
   def move_appliance(self, height: float) -> None:
     self.current_height += height
-    print("Change Height" + self.current_height)
+    print(f"Change Height {self.current_height}")
 
   def toggle_electromagnet(self, state: bool) -> None:
     if self.current_eletric_state == False:

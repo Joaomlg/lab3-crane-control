@@ -10,5 +10,5 @@ controller = CraneControllerFactory.create(Variant.Temporary)
     
 if __name__ == '__main__':
     # sim.startSimulation()
-    window = create_gui()
+    window = create_gui(controller)
     window.mainloop()
