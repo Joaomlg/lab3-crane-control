@@ -1,7 +1,6 @@
 import math
 from integration.ICraneController import ICraneController
 from utils.SingletonMetaClass import AbstractSingletonMetaClass
-import zmqRemoteApi
 import math
 import time
 
@@ -11,6 +10,7 @@ VELOCITY_APPLIANCE = .15
 class SimulatedCraneController(ICraneController, metaclass=AbstractSingletonMetaClass):
   def __init__(self):
     try : 
+      import integration.zmqRemoteApi as zmqRemoteApi
       self.sim = zmqRemoteApi.RemoteAPIClient().getObject('sim')
       print("Connected to simulation")
     except :
