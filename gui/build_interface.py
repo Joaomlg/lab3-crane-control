@@ -9,6 +9,7 @@ class BuildGui:
         self.window = window
         self.PATH = PATH
 
+
     def build_control_arm_gui(self):
         title = ttk.Label(
             self.window, text="Arm Scale", anchor="center", font=("Arial Bold", 15)
@@ -31,6 +32,8 @@ class BuildGui:
         ttk.Label(self.window, text="Arm Rotate Degrees").grid(column=0, row=5)
         arm_input = ttk.Entry(self.window, width=10)
         arm_input.grid(padx=10, pady=10, column=1, row=5)
+        
+        return arm_position, arm_input
 
 
     def build_control_hoist_gui(self):
@@ -50,8 +53,18 @@ class BuildGui:
         ttk.Label(self.window, text="Curret Position").grid(column=9, row=4)
         host_position = ttk.Entry(self.window, width=10, state="disabled")
         host_position.grid(padx=10, pady=10, column=10, row=4)
-        
+
         # Input degress
         ttk.Label(self.window, text="Hoist Steps").grid(column=9, row=5)
         host_input = ttk.Entry(self.window, width=10)
         host_input.grid(padx=10, pady=10, column=10, row=5)
+        
+        return host_position, host_input
+
+    def build_slider_set(self, set_builder):
+        ttk.Label(self.window, text="Simulação").grid(column=7, row=0)
+        slider_set = ttk.Scale(self.window, from_=-1, to=1, orient=HORIZONTAL, command=set_builder)
+        slider_set.grid(column=8, columnspan=4, row=0)
+        ttk.Label(self.window, text="Protótipo").grid(column=12, row=0)
+        
+        return slider_set
