@@ -6,7 +6,8 @@
 const float spearExternalEngineRatio = 3.35;
 StepMotor_28BYJ48 spear(8, 10, 9, 11, spearExternalEngineRatio);
 
-StepMotor_28BYJ48 appliance(2, 4, 3, 5);
+const float applianceExternalEngineRatio = 1 / (5 * PI);
+StepMotor_28BYJ48 appliance(2, 4, 3, 5, applianceExternalEngineRatio);
 
 const int trigPin = 6;
 const int echoPin = 7;
