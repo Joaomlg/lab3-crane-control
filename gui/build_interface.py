@@ -4,6 +4,7 @@ from ttkbootstrap.constants import *
 from PIL import ImageTk, Image
 
 
+
 class BuildGui:
     def __init__(self, window, PATH):
         self.window = window
@@ -68,3 +69,10 @@ class BuildGui:
         ttk.Label(self.window, text="Protótipo").grid(column=12, row=0)
         
         return slider_set
+    
+    def build_sensor_field(self):
+        ttk.Label(self.window, text="Sensor").grid(column=18, row=5)
+        sensor_value = ttk.Entry(self.window, width=10, state="disabled")
+        sensor_value.grid(padx=10, pady=10, column=20, row=5)
+        
+        return sensor_value

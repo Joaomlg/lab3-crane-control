@@ -1,10 +1,12 @@
 import os
 import tkinter as tk
+from numpy import var
 import ttkbootstrap as ttk
 
 from ttkbootstrap.constants import *
 from .build_interface import BuildGui
 from gui.controller import ControlGui
+from functools import partial
 
 PATH = os.path.abspath(os.getcwd())
 
@@ -38,14 +40,24 @@ def create_gui(controller):
 
     # Controle do equipamento do braço
     host_position, host_input = build.build_control_hoist_gui()
-    # host_input.get()
     
+    # Ímã e Sensor de Distância
+    ima_value = tk.IntVar()
+    controller_ima = partial(controller.set_ima_state, ima_value.get())
+    check_ima = tk.Checkbutton(window, text='Ímã', variable=ima_value, command=controller_ima)
+    check_ima.grid(padx=10, pady=10, column=20, row=4)
+    sensor_value = build.build_sensor_field()
+    
+    
+    # Buttons
     btn_exe_gui = ttk.Button(
         window, text="Exec", command=controller.command_move_appliance, bootstyle=SUCCESS
     )
     btn_exe_gui.grid(column=3, row=10)
+    
+    controller_reset = partial(controller.reset_values, arm_input, host_input)
     btn_alert = ttk.Button(
-        window, text="Reset", command=controller.reset_values, bootstyle=SECONDARY
+        window, text="Reset", command=controller_reset, bootstyle=SECONDARY
     )
     btn_alert.grid(column=9, row=10)
 
