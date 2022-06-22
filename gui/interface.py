@@ -15,7 +15,7 @@ def create_gui(controller):
     # window = Tk()
     window = ttk.Window(themename="superhero")
     build = BuildGui(window, PATH)
-    controller = ControlGui(controller)
+    # controller = ControlGui(controller)
 
     # Header
     window.title("GUI")
@@ -43,11 +43,13 @@ def create_gui(controller):
     
     # Ímã e Sensor de Distância
     ima_value = tk.IntVar()
-    controller_ima = partial(controller.set_ima_state, ima_value.get())
-    check_ima = tk.Checkbutton(window, text='Ímã', variable=ima_value, command=controller_ima)
-    check_ima.grid(padx=10, pady=10, column=20, row=4)
     sensor_value = build.build_sensor_field()
     
+    controller = ControlGui(controller, ima_value, arm_position, arm_input, host_position, host_input, sensor_value)
+    
+    # controller_ima = partial(controller.set_ima_state, ima_value.get())
+    check_ima = tk.Checkbutton(window, text='Ímã', variable=ima_value, command=controller.set_ima_state)
+    check_ima.grid(padx=10, pady=10, column=20, row=4)
     
     # Buttons
     btn_exe_gui = ttk.Button(
@@ -55,9 +57,8 @@ def create_gui(controller):
     )
     btn_exe_gui.grid(column=3, row=10)
     
-    controller_reset = partial(controller.reset_values, arm_input, host_input)
     btn_alert = ttk.Button(
-        window, text="Reset", command=controller_reset, bootstyle=SECONDARY
+        window, text="Reset", command=controller.reset_values, bootstyle=SECONDARY
     )
     btn_alert.grid(column=9, row=10)
 
