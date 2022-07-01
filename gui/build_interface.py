@@ -4,6 +4,7 @@ from ttkbootstrap.constants import *
 from PIL import ImageTk, Image
 
 
+
 class BuildGui:
     def __init__(self, window, PATH):
         self.window = window
@@ -25,7 +26,9 @@ class BuildGui:
         
         # Show degress
         ttk.Label(self.window, text="Curret Position").grid(column=0, row=4)
-        arm_position = ttk.Entry(self.window, width=10, state="disabled")
+        arm_position = ttk.Label(
+            self.window, text="0", anchor="center", font=("Arial Bold", 12)
+        )
         arm_position.grid(padx=10, pady=10, column=1, row=4)
         
         # Input degress
@@ -51,7 +54,9 @@ class BuildGui:
 
         # Show degress
         ttk.Label(self.window, text="Curret Position").grid(column=9, row=4)
-        host_position = ttk.Entry(self.window, width=10, state="disabled")
+        host_position = ttk.Label(
+            self.window, text="0", anchor="center", font=("Arial Bold", 12)
+        )
         host_position.grid(padx=10, pady=10, column=10, row=4)
 
         # Input degress
@@ -68,3 +73,12 @@ class BuildGui:
         ttk.Label(self.window, text="Protótipo").grid(column=12, row=0)
         
         return slider_set
+    
+    def build_sensor_field(self):
+        ttk.Label(self.window, text="Sensor").grid(column=18, row=5)
+        sensor_value = ttk.Label(
+            self.window, text="0", anchor="center", font=("Arial Bold", 12)
+        )
+        sensor_value.grid(padx=10, pady=10, column=20, row=5)
+        
+        return sensor_value
