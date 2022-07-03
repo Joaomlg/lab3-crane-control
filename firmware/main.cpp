@@ -4,10 +4,10 @@
 #include <Ultrasonic.h>
 
 const float spearExternalEngineRatio = 3.35;
-StepMotor_28BYJ48 spear(8, 10, 9, 11, spearExternalEngineRatio);
+StepMotor_28BYJ48 spear(2, 4, 3, 5, spearExternalEngineRatio);
 
-const float applianceExternalEngineRatio = 10/7 * 5 * PI;
-StepMotor_28BYJ48 appliance(2, 4, 3, 5, applianceExternalEngineRatio);
+const float applianceExternalEngineRatio = 5 * PI;
+StepMotor_28BYJ48 appliance(8, 10, 9, 11, applianceExternalEngineRatio);
 
 const int trigPin = 6;
 const int echoPin = 7;
@@ -25,7 +25,7 @@ void setup() {
   pinMode(magnetPin, OUTPUT);
   digitalWrite(magnetPin, magnetStatus);
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void processCommand() {
