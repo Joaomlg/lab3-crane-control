@@ -14,6 +14,12 @@ class StepMotor_28BYJ48 {
     void rotateDegreesAsync(float deg);
     bool isRotating();
     void loop();
+    void turnDown();
+
+    int pin1;
+    int pin2;
+    int pin3;
+    int pin4;
 
   private:
     Stepper* controller;

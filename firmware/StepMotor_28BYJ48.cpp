@@ -1,4 +1,5 @@
 #include "StepMotor_28BYJ48.h"
+#include <Arduino.h>
 
 StepMotor_28BYJ48::StepMotor_28BYJ48(int pin1, int pin2, int pin3, int pin4, float externalEngineRatio=1) {
   this->controller = new Stepper(this->innerStepsPerRevolution, pin1, pin2, pin3, pin4);
@@ -9,6 +10,11 @@ StepMotor_28BYJ48::StepMotor_28BYJ48(int pin1, int pin2, int pin3, int pin4, flo
   this->asyncRemainingSteps = 0;
 
   this->controller->setSpeed(this->rpmSpeed);
+
+  this->pin1 = pin1;
+  this->pin2 = pin2;
+  this->pin3 = pin3;
+  this->pin4 = pin4;
 }
 
 void StepMotor_28BYJ48::rotate(int steps) {
@@ -39,6 +45,7 @@ bool StepMotor_28BYJ48::isRotating() {
 
 void StepMotor_28BYJ48::loop() {
   if (this->asyncRemainingSteps == 0) {
+    this->turnDown();
     return;
   }
 
@@ -47,6 +54,13 @@ void StepMotor_28BYJ48::loop() {
   this->rotate(steps * this->rotateDirection);
 
   this->asyncRemainingSteps -= steps;
+}
+
+void StepMotor_28BYJ48::turnDown() {
+  digitalWrite(this->pin1, LOW);
+  digitalWrite(this->pin2, LOW);
+  digitalWrite(this->pin3, LOW);
+  digitalWrite(this->pin4, LOW);
 }
 
 float StepMotor_28BYJ48::stepsToDegrees(int steps) {
