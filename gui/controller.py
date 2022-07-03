@@ -1,28 +1,50 @@
 from tkinter import *
+from integration.CraneControllerFactory import CraneControllerFactory, Variant
 
 
 class ControlGui:
-    def __init__(self, controller, ima_value, arm_position, arm_input, hoist_position, hoist_input, sensor_value):
-        self.controller = controller
+    def __init__(self, ima_value, arm_position, arm_input, hoist_position, hoist_input, sensor_value, slider_set):
+        self.controller_physical = CraneControllerFactory.create(Variant.Temporary)
+        # self.controller_physical = CraneControllerFactory.create(Variant.Physical)
+        self.controller_simulation = CraneControllerFactory.create(Variant.Temporary)
+        # self.controller_simulation = CraneControllerFactory.create(Variant.Simulation)
+        
         self.ima_value = ima_value
         self.arm_position = arm_position
         self.arm_input = arm_input
         self.hoist_position = hoist_position
         self.hoist_input = hoist_input
         self.sensor_value = sensor_value
+        self.slider_set = slider_set
+
+    def get_controller(self):
+        if self.slider_set.get() < 0:
+            print()
+            print("- Mudando para simulação")
+            return self.controller_physical
+            # return CraneControllerFactory.create(Variant.Simulation)
+
+        print()
+        print("- Mudando pro físico")
+        return self.controller_simulation
+        # return CraneControllerFactory.create(Variant.Physical)
 
     def command_move_appliance(self):
-        self.controller.move_appliance(self.arm_input.get())
-        self.controller.rotate_spear(self.hoist_input.get())
+        controller = self.get_controller()
+        controller.move_appliance(self.arm_input.get())
+        controller.rotate_spear(self.hoist_input.get())
         self.update_field_values()
     
     def update_field_values(self):
-        self.arm_position["text"] = self.controller.get_appliance_height()
-        self.hoist_position["text"] = self.controller.get_spear_angle()
-        self.sensor_value["text"] = self.controller.get_ultrasonic_distance()
+        controller = self.get_controller()
+        self.arm_position["text"] = controller.get_appliance_height()
+        self.hoist_position["text"] = controller.get_spear_angle()
+        self.sensor_value["text"] = controller.get_ultrasonic_distance()
+        # self.reset_values()
 
     def reset_values(self):
-        self.controller.reset_crane()
+        controller = self.get_controller()
+        controller.reset_crane()
 
         # GUI Values
         self.hoist_input.delete(0,END)
@@ -32,5 +54,6 @@ class ControlGui:
         return
 
     def set_ima_state(self):
-        self.controller.toggle_electromagnet(self.ima_value.get())
+        controller = self.get_controller()
+        controller.toggle_electromagnet(self.ima_value.get())
         return

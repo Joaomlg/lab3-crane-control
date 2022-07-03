@@ -11,7 +11,7 @@ from functools import partial
 PATH = os.path.abspath(os.getcwd())
 
 
-def create_gui(controller):
+def create_gui():
     # window = Tk()
     window = ttk.Window(themename="superhero")
     build = BuildGui(window, PATH)
@@ -45,7 +45,7 @@ def create_gui(controller):
     ima_value = tk.IntVar()
     sensor_value = build.build_sensor_field()
     
-    controller = ControlGui(controller, ima_value, arm_position, arm_input, host_position, host_input, sensor_value)
+    controller = ControlGui(ima_value, arm_position, arm_input, host_position, host_input, sensor_value, slider_set)
     
     # controller_ima = partial(controller.set_ima_state, ima_value.get())
     check_ima = tk.Checkbutton(window, text='Ímã', variable=ima_value, command=controller.set_ima_state)
