@@ -1,3 +1,5 @@
 pyserial==3.5
 ttkbootstrap==1.8.0
 Pillow==8.3.1
+paho-mqtt==1.6.1
+configparser==5.2.0
