@@ -27,17 +27,15 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 void callback(char *topic, byte *payload, unsigned int length) {
-  String payload_str = "";
-
-  for (int i = 0; i < length; i++) {
-    payload_str += (char) payload[i];
-  }
-  
   if (SERIAL_DEBUG) {
-    Serial.printf("Message arrived in topic: %s\n", topic);
+    Serial.print("Message arrived in topic: ");
   }
 
-  Serial.println(payload_str);
+  for (unsigned int i = 0; i < length; i++) {
+    Serial.print((char) payload[i]);
+  }
+
+  Serial.print('\n');
 }
 
 void blink_builtin_led(int ms) {
@@ -103,11 +101,18 @@ void setup() {
 void loop() {
   client.loop();
 
+  const char buf_sz = 25;
+  static char buf[buf_sz];
+  static int i = 0;
+
   if (Serial.available()) {
-    String data = Serial.readString();
-    int str_len = data.length() + 1; 
-    char char_array[str_len];
-    data.toCharArray(char_array, str_len);
-    client.publish(sender_topic, char_array);
+    char c = (char) Serial.read();
+    buf[i++] = c;
+  }
+
+  if (i >= buf_sz || (i > 0 && buf[i - 1] == '\n')) {
+    buf[i] = '\0';
+    client.publish(sender_topic, buf);
+    i = 0;
   }
 }
