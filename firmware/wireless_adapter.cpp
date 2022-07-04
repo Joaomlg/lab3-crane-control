@@ -3,16 +3,11 @@
 
 #define SERIAL_DEBUG false
 #define BUILTIN_LED 2
+#define BUF_SZ 25
 
 // WiFi
 const char *ssid = "IDEAPAD-S145-JM";
 const char *password = "048Ke34^";
-
-// Online Test MQTT Broker
-// const char *mqtt_broker = "broker.emqx.io";
-// const char *mqtt_username = "emqx";
-// const char *mqtt_password = "public";
-// const int mqtt_port = 1883;
 
 // Localhost MQTT Broker
 const char *mqtt_broker = "192.168.137.1";
@@ -20,7 +15,7 @@ const char *mqtt_username = "";
 const char *mqtt_password = "";
 const int mqtt_port = 1883;
 
-const char *sender_topic="crane_controller/channel1";
+const char *sender_topic = "crane_controller/channel1";
 const char *receiver_topic = "crane_controller/channel2";
 
 WiFiClient espClient;
@@ -44,65 +39,55 @@ void blink_builtin_led(int ms) {
   digitalWrite(BUILTIN_LED, LOW);
 }
 
-void setup() {
-  pinMode(BUILTIN_LED, OUTPUT);
-  digitalWrite(BUILTIN_LED, LOW);
+boolean wifi_connected() {
+  return WiFi.status() == WL_CONNECTED;
+}
 
-  Serial.begin(115200);
-  
-  // connecting to a WiFi network
-  WiFi.begin(ssid, password);
-  
-  while (WiFi.status() != WL_CONNECTED) {
+void connect_to_wifi() {
+  while (!wifi_connected()) {
     blink_builtin_led(1000);
     if (SERIAL_DEBUG) {
       Serial.println("Connecting to WiFi...");
     }
   }
-  
+
   if (SERIAL_DEBUG) {
     Serial.println("Connected to the WiFi network");
   }
-  
-  //connecting to a mqtt broker
-  client.setServer(mqtt_broker, mqtt_port);
-  client.setCallback(callback);
-  
-  while (!client.connected()) {
+}
+
+boolean mqtt_connected() {
+  return client.connected();
+}
+
+void connect_to_mqtt() {
+  while (!mqtt_connected()) {
     String client_id = "esp8266-client-";
     client_id += String(WiFi.macAddress());
 
     if (SERIAL_DEBUG) {
-      Serial.printf("The client %s connects to the public mqtt broker\n", client_id.c_str());
+      Serial.printf("Attempting to connect to %s:%d\n", mqtt_broker, mqtt_port);
     }
 
-    boolean connected = client.connect(client_id.c_str(), mqtt_username, mqtt_password);
-
-    if (connected) {
+    if (client.connect(client_id.c_str(), mqtt_username, mqtt_password)) {
       if(SERIAL_DEBUG) {
-        Serial.println("Public emqx mqtt broker connected");
+        Serial.printf("%s connected to %s:%d\n", client_id.c_str(), mqtt_broker, mqtt_port);
       }
       break;
     }
 
     if (SERIAL_DEBUG) {
-      Serial.print("failed with state ");
-      Serial.print(client.state());
+      Serial.printf("Could not connect to %s:%d\n", mqtt_broker, mqtt_port);
     }
 
     blink_builtin_led(2000);
   }
 
   client.subscribe(receiver_topic);
-
-  digitalWrite(BUILTIN_LED, HIGH);
 }
 
-void loop() {
-  client.loop();
-
-  const char buf_sz = 25;
-  static char buf[buf_sz];
+void serial_loop() {
+  static char buf[BUF_SZ];
   static int i = 0;
 
   if (Serial.available()) {
@@ -110,9 +95,39 @@ void loop() {
     buf[i++] = c;
   }
 
-  if (i >= buf_sz || (i > 0 && buf[i - 1] == '\n')) {
+  if (i == BUF_SZ - 1 || (i > 0 && buf[i - 1] == '\n')) {
     buf[i] = '\0';
     client.publish(sender_topic, buf);
     i = 0;
   }
+}
+
+void setup() {
+  pinMode(BUILTIN_LED, OUTPUT);
+  digitalWrite(BUILTIN_LED, LOW);
+
+  Serial.begin(115200);
+  
+  WiFi.begin(ssid, password);
+  connect_to_wifi();
+  
+  client.setServer(mqtt_broker, mqtt_port);
+  client.setCallback(callback);
+  connect_to_mqtt();
+
+  digitalWrite(BUILTIN_LED, HIGH);
+}
+
+void loop() {
+  if (!wifi_connected()) {
+    connect_to_wifi();
+  }
+
+  if(wifi_connected() && !mqtt_connected()) {
+    connect_to_mqtt();
+  }
+
+  client.loop();
+
+  serial_loop();
 }
