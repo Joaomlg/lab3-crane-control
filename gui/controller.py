@@ -8,7 +8,7 @@ class ControlGui:
         # self.controller_physical = CraneControllerFactory.create(Variant.Physical)
         self.controller_simulation = CraneControllerFactory.create(Variant.Temporary)
         # self.controller_simulation = CraneControllerFactory.create(Variant.Simulation)
-        
+
         self.ima_value = ima_value
         self.arm_position = arm_position
         self.arm_input = arm_input
@@ -19,15 +19,8 @@ class ControlGui:
 
     def get_controller(self):
         if self.slider_set.get() < 0:
-            print()
-            print("- Mudando para simulação")
             return self.controller_physical
-            # return CraneControllerFactory.create(Variant.Simulation)
-
-        print()
-        print("- Mudando pro físico")
         return self.controller_simulation
-        # return CraneControllerFactory.create(Variant.Physical)
 
     def command_move_appliance(self):
         controller = self.get_controller()
@@ -45,6 +38,7 @@ class ControlGui:
     def reset_values(self):
         controller = self.get_controller()
         controller.reset_crane()
+        self.update_field_values()
 
         # GUI Values
         self.hoist_input.delete(0,END)
@@ -57,3 +51,23 @@ class ControlGui:
         controller = self.get_controller()
         controller.toggle_electromagnet(self.ima_value.get())
         return
+
+    def move_appliance_right(self):
+        controller = self.get_controller()
+        controller.move_appliance(1)
+        self.update_field_values()
+    
+    def move_appliance_left(self):
+        controller = self.get_controller()
+        controller.move_appliance(-1)
+        self.update_field_values()
+
+    def move_spear_up(self):
+        controller = self.get_controller()
+        controller.rotate_spear(1)
+        self.update_field_values()
+
+    def move_spear_down(self):
+        controller = self.get_controller()
+        controller.rotate_spear(-1)
+        self.update_field_values()
