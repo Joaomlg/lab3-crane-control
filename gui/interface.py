@@ -53,22 +53,22 @@ def create_gui():
     
     # Buttons Moviments
     btn_arm_left = ttk.Button(
-        window, text="⬅", command=controller.move_appliance_left, bootstyle="primary-outline"
+        window, text="⬇", command=controller.move_appliance_left, bootstyle="primary-outline"
     )
     btn_arm_left.grid(column=0, row=5)
     btn_arm_right = ttk.Button(
-        window, text="➡", command=controller.move_appliance_right, bootstyle="primary-outline"
+        window, text="⬆", command=controller.move_appliance_right, bootstyle="primary-outline"
     )
     btn_arm_right.grid(column=1, row=5)
     
-    btn_spear_up = ttk.Button(
-        window, text="⬆", command=controller.move_spear_up, bootstyle="primary-outline"
-    )
-    btn_spear_up.grid(column=9, row=5)
     btn_spear_down = ttk.Button(
-        window, text="⬇", command=controller.move_spear_down, bootstyle="primary-outline"
+        window, text="⬅", command=controller.move_spear_down, bootstyle="primary-outline"
     )
-    btn_spear_down.grid(column=10, row=5)
+    btn_spear_down.grid(column=9, row=5)
+    btn_spear_up = ttk.Button(
+        window, text="➡", command=controller.move_spear_up, bootstyle="primary-outline"
+    )
+    btn_spear_up.grid(column=10, row=5)
     
     # Buttons Executions
     btn_exe_gui = ttk.Button(
