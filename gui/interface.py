@@ -45,7 +45,7 @@ def create_gui():
     ima_value = tk.IntVar()
     sensor_value = build.build_sensor_field()
     
-    controller = ControlGui(ima_value, arm_position, arm_input, host_position, host_input, sensor_value, slider_set)
+    controller = ControlGui(ima_value, arm_position, arm_input, host_position, host_input, sensor_value, slider_set, title)
     
     # controller_ima = partial(controller.set_ima_state, ima_value.get())
     check_ima = ttk.Checkbutton(window, text='Ímã', variable=ima_value, command=controller.set_ima_state, bootstyle="success")

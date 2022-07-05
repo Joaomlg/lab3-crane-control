@@ -3,7 +3,7 @@ from integration.CraneControllerFactory import CraneControllerFactory, Variant
 
 
 class ControlGui:
-    def __init__(self, ima_value, arm_position, arm_input, hoist_position, hoist_input, sensor_value, slider_set):
+    def __init__(self, ima_value, arm_position, arm_input, hoist_position, hoist_input, sensor_value, slider_set, title):
         self.controller_physical = CraneControllerFactory.create(Variant.Temporary)
         # self.controller_physical = CraneControllerFactory.create(Variant.Physical)
         self.controller_simulation = CraneControllerFactory.create(Variant.Temporary)
@@ -16,11 +16,15 @@ class ControlGui:
         self.hoist_input = hoist_input
         self.sensor_value = sensor_value
         self.slider_set = slider_set
+        self.title = title
+        slider_set.configure(command= self.update_field_values)
 
     def get_controller(self):
         if self.slider_set.get() < 0:
-            return self.controller_physical
-        return self.controller_simulation
+            self.title["text"] = "Guindaste - Simulação "
+            return self.controller_simulation
+        self.title["text"] = "Guindaste - Protótipo "
+        return self.controller_physical
 
     def command_move_appliance(self):
         controller = self.get_controller()
@@ -33,7 +37,7 @@ class ControlGui:
         self.update_field_values()     
     
     
-    def update_field_values(self):
+    def update_field_values(self, event=None):
         controller = self.get_controller()
         self.arm_position["text"] = controller.get_appliance_height()
         self.hoist_position["text"] = controller.get_spear_angle()
