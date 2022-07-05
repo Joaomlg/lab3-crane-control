@@ -1,6 +1,5 @@
 import os
 import tkinter as tk
-from numpy import var
 import ttkbootstrap as ttk
 
 from ttkbootstrap.constants import *
@@ -73,13 +72,18 @@ def create_gui():
     
     # Buttons Executions
     btn_exe_gui = ttk.Button(
-        window, text="Exec", command=controller.command_move_appliance, bootstyle=SUCCESS
+        window, text="Move Appliance", command=controller.command_move_appliance, bootstyle=SUCCESS
     )
-    btn_exe_gui.grid(column=3, row=10)
+    btn_exe_gui.grid(column=0, row=10)
+    
+    btn_exe_gui = ttk.Button(
+        window, text="Rotate Spear", command=controller.command_move_spear, bootstyle=SUCCESS
+    )
+    btn_exe_gui.grid(column=9, row=10)
     
     btn_alert = ttk.Button(
         window, text="Reset", command=controller.reset_values, bootstyle=SECONDARY
     )
-    btn_alert.grid(column=9, row=10)
+    btn_alert.grid(column=12, row=10)
 
     return window

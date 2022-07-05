@@ -25,8 +25,13 @@ class ControlGui:
     def command_move_appliance(self):
         controller = self.get_controller()
         controller.move_appliance(self.arm_input.get())
-        controller.rotate_spear(self.hoist_input.get())
         self.update_field_values()
+   
+    def command_move_spear(self):
+        controller = self.get_controller()
+        controller.rotate_spear(self.hoist_input.get())
+        self.update_field_values()     
+    
     
     def update_field_values(self):
         controller = self.get_controller()
