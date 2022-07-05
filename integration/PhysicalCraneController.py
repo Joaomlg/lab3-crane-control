@@ -3,34 +3,27 @@ from threading import Thread, Lock
 from time import sleep
 
 from integration.ICraneController import ICraneController
+from integration.utils.phy_crane_comm_proto import PhysicalCraneCommunicationProtocol
 from utils.SingletonMetaClass import AbstractSingletonMetaClass
 
 class PhysicalCraneController(ICraneController, metaclass=AbstractSingletonMetaClass):
-  COMM_SEP = ':'
-
   def __init__(self, port: str = 'COM4'):
     self.serial = Serial(port)
     self.serial_lock = Lock()
 
-    self.current_spear_position = 0
-    self.current_appliance_height = 0
-    self.current_magnet_state = 0
-    self.measured_distance = 0
+    self.protocol = PhysicalCraneCommunicationProtocol()
 
-    self.process_telemetry_thread = Thread(target=self.process_telemetry, daemon=True)
-    self.process_telemetry_thread.start()
+    self.crane_state = self.protocol.get_initial_state()
+
+    self.recv_thread = Thread(target=self.recv_thread_routine, daemon=True)
+    self.recv_thread.start()
   
-  def process_telemetry(self) -> None:
+  def recv_thread_routine(self) -> None:
     while True:
       recv = self.__read_serial_threadsafe()
 
       if recv:
-        values = recv.split(self.COMM_SEP)
-
-        self.current_spear_position = float(values[0])
-        self.current_appliance_height = float(values[1])
-        self.current_magnet_state = bool(values[2])
-        self.measured_distance = float(values[3])
+        self.crane_state = self.protocol.process_telemetry(recv)
 
       sleep(0.1)
 
@@ -38,30 +31,31 @@ class PhysicalCraneController(ICraneController, metaclass=AbstractSingletonMetaC
     raise NotImplementedError
 
   def rotate_spear(self, degrees: int) -> None:
-    self.__write_serial_threadsafe(f'spear:set:{degrees}')
+    command = self.protocol.build_rotate_spear_command(degrees)
+    self.__write_serial_threadsafe(command)
 
   def move_appliance(self, height: float) -> None:
-    self.__write_serial_threadsafe(f'spear:set:{height}')
+    command = self.protocol.build_move_appliance_command(height)
+    self.__write_serial_threadsafe(command)
 
   def toggle_electromagnet(self, state: bool) -> None:
-    self.__write_serial_threadsafe(f'spear:set:{int(state)}')
+    command = self.protocol.build_toggle_electromagnet_command(state)
+    self.__write_serial_threadsafe(command)
 
   def get_spear_angle(self) -> float:
-    return self.current_spear_position
+    return self.crane_state.current_spear_position
   
   def get_appliance_height(self) -> float:
-    return self.current_appliance_height
+    return self.crane_state.current_appliance_height
 
   def get_electromagnet_state(self) -> bool:
-    return self.current_magnet_state
+    return self.crane_state.current_magnet_state
   
   def get_ultrasonic_distance(self) -> float:
-    return self.measured_distance
+    return self.crane_state.measured_distance
 
   def __write_serial_threadsafe(self, data: str) -> None:
     with self.serial_lock:
-      if not data.endswith('\n'):
-        data += '\n'
       self.serial.write(data.encode('utf-8'))
   
   def __read_serial_threadsafe(self) -> None:
