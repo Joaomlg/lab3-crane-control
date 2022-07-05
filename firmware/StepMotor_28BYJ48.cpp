@@ -17,12 +17,17 @@ StepMotor_28BYJ48::StepMotor_28BYJ48(int pin1, int pin2, int pin3, int pin4, flo
   this->pin4 = pin4;
 }
 
+void StepMotor_28BYJ48::setInitialPosition(float initialPosition) {
+  int steps = this->degreesToSteps(initialPosition);
+  this->currentStep = steps;
+}
+
 void StepMotor_28BYJ48::rotate(int steps) {
   this->controller->step(steps);
   this->currentStep += steps;
 }
 
-float StepMotor_28BYJ48::getCurrentDegreesPosition() {
+float StepMotor_28BYJ48::getCurrentRelativeDegreesPosition() {
   float currentDegreesPosition = this->stepsToDegrees(this->currentStep);
   float currentRevolutionDegreesPosition = fmod(currentDegreesPosition, this->degreesPerRevolution);
   
@@ -31,6 +36,11 @@ float StepMotor_28BYJ48::getCurrentDegreesPosition() {
   }
 
   return currentRevolutionDegreesPosition;
+}
+
+float StepMotor_28BYJ48::getCurrentDegreesPosition() {
+  float currentDegreesPosition = this->stepsToDegrees(this->currentStep);
+  return currentDegreesPosition;
 }
 
 void StepMotor_28BYJ48::rotateDegreesAsync(float deg) {
