@@ -6,8 +6,10 @@
 const float spearExternalEngineRatio = 3.35;
 StepMotor_28BYJ48 spear(2, 4, 3, 5, spearExternalEngineRatio);
 
-const float applianceExternalEngineRatio = 5 * PI;
+const float applianceExternalEngineRatio = 360 / (5 * PI);
 StepMotor_28BYJ48 appliance(8, 10, 9, 11, applianceExternalEngineRatio);
+const float maxApplianceHeight = 27;
+const float applianceHeightTolerance = 1;
 
 const int trigPin = 6;
 const int echoPin = 7;
@@ -24,6 +26,8 @@ const long serialWriteInterval = 1000;
 void setup() {
   pinMode(magnetPin, OUTPUT);
   digitalWrite(magnetPin, magnetStatus);
+  
+  appliance.setInitialPosition(maxApplianceHeight);
 
   Serial.begin(115200);
 }
@@ -42,8 +46,14 @@ void processCommand() {
   }
 
   if (data.startsWith("appliance:set:")) {
-    float deg = data.substring(14).toFloat();
-    appliance.rotateDegreesAsync(deg);
+    float height = data.substring(14).toFloat();
+    float currentHeight = appliance.getCurrentDegreesPosition();
+
+    if (currentHeight + height > maxApplianceHeight + applianceHeightTolerance || currentHeight + height < -applianceHeightTolerance) {
+      return;
+    }
+
+    appliance.rotateDegreesAsync(height);
     return;
   }
 
@@ -68,7 +78,7 @@ bool shouldTelemetry() {
 }
 
 void telemetry() {
-  Serial.print(spear.getCurrentDegreesPosition());
+  Serial.print(spear.getCurrentRelativeDegreesPosition());
   Serial.print(":");
   Serial.print(appliance.getCurrentDegreesPosition());
   Serial.print(":");

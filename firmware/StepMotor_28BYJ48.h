@@ -9,7 +9,9 @@ class StepMotor_28BYJ48 {
   public:
     StepMotor_28BYJ48(int pin1, int pin2, int pin3, int pin4, float externalEngineRatio=1);
     
+    void setInitialPosition(float initialPosition);
     void rotate(int steps);
+    float getCurrentRelativeDegreesPosition();
     float getCurrentDegreesPosition();
     void rotateDegreesAsync(float deg);
     bool isRotating();
