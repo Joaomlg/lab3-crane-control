@@ -7,7 +7,7 @@ from integration.CraneControllerFactory import CraneControllerFactory, Variant
 
 class ControlGui:
     def __init__(self, ima_value, arm_position, arm_input, hoist_position, hoist_input, 
-                 sensor_value, slider_set, title, arm_input_to, host_input_to):
+                 sensor_value, slider_set, title, arm_input_to, host_input_to, object_height):
         self.controller_physical = CraneControllerFactory.create(Variant.Temporary)
         # self.controller_physical = CraneControllerFactory.create(Variant.Physical)
         self.controller_simulation = CraneControllerFactory.create(Variant.Temporary)
@@ -23,6 +23,7 @@ class ControlGui:
         self.title = title
         self.arm_input_to = arm_input_to 
         self.host_input_to = host_input_to
+        self.object_height = object_height
         # slider_set.configure(command= self.update_field_values)
 
         existsThread = next((thread for thread in threading.enumerate() if thread.name == 'thread_update_values'), False)
@@ -43,11 +44,11 @@ class ControlGui:
     
     def command_move_appliance_to(self):
         controller = self.get_controller()
-        controller.move_appliance(int(self.arm_input_to.get()) - int(controller.get_appliance_height()))
+        controller.move_appliance(float(self.arm_input_to.get()) - float(controller.get_appliance_height()))
 
     def command_move_spear_to(self):
         controller = self.get_controller()
-        controller.move_appliance(int(self.host_input_to.get()) - int(controller.get_spear_angle()))
+        controller.move_appliance(float(self.host_input_to.get()) - float(controller.get_spear_angle()))
 
     def command_move_spear(self):
         controller = self.get_controller()
@@ -61,6 +62,7 @@ class ControlGui:
             self.arm_position["text"] = controller.get_appliance_height()
             self.hoist_position["text"] = controller.get_spear_angle()
             self.sensor_value["text"] = controller.get_ultrasonic_distance()
+            self.object_height["text"] = 40 - float(controller.get_ultrasonic_distance())
         # self.reset_values()
 
     def reset_values(self):

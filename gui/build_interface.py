@@ -92,4 +92,10 @@ class BuildGui:
         )
         sensor_value.grid(padx=10, pady=10, column=20, row=5)
         
-        return sensor_value
+        ttk.Label(self.window, text="Altura do objeto").grid(column=18, row=6)
+        object_height = ttk.Label(
+            self.window, text="0", anchor="center", font=("Arial Bold", 12)
+        )
+        object_height.grid(padx=10, pady=10, column=20, row=6)
+        
+        return sensor_value, object_height

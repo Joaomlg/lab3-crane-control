@@ -42,12 +42,12 @@ def create_gui():
 
     # Ímã e Sensor de Distância
     ima_value = tk.IntVar()
-    sensor_value = build.build_sensor_field()
+    sensor_value, object_height = build.build_sensor_field()
     
     controller = ControlGui(ima_value, arm_position, arm_input, 
                             host_position, host_input, 
                             sensor_value, slider_set, title,
-                            arm_input_to, host_input_to)
+                            arm_input_to, host_input_to, object_height)
     
     # controller_ima = partial(controller.set_ima_state, ima_value.get())
     check_ima = ttk.Checkbutton(window, text='Ímã', variable=ima_value, command=controller.set_ima_state, bootstyle="success")
@@ -100,4 +100,3 @@ def create_gui():
 
 
 # TODO Adicionar 40 menos o sensor na GUI
-# TODO adicionar negocio de pra onde quer mandar o guindates
