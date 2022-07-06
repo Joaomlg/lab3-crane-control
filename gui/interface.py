@@ -36,7 +36,6 @@ def create_gui():
 
     # Controle do atuador de giro do braço
     arm_position, arm_input = build.build_control_arm_gui(row=2, column=0) # Row até 5
-    # btn_arm_left, btn_arm_right = build.build_btn_arm_gui(row=2, column=0)
     
     # Controle do equipamento do braço
     host_position, host_input = build.build_control_hoist_gui(row=2, column=9)

@@ -1,3 +1,6 @@
+import time
+import threading
+
 from tkinter import *
 from integration.CraneControllerFactory import CraneControllerFactory, Variant
 
@@ -17,7 +20,12 @@ class ControlGui:
         self.sensor_value = sensor_value
         self.slider_set = slider_set
         self.title = title
-        slider_set.configure(command= self.update_field_values)
+        # slider_set.configure(command= self.update_field_values)
+
+        existsThread = next((thread for thread in threading.enumerate() if thread.name == 'thread_update_values'), False)
+        if existsThread == False:
+            radioThread = threading.Thread(target = self.update_field_values, daemon=True, name="thread_update_values")
+            radioThread.start()
 
     def get_controller(self):
         if self.slider_set.get() < 0:
@@ -29,25 +37,26 @@ class ControlGui:
     def command_move_appliance(self):
         controller = self.get_controller()
         controller.move_appliance(self.arm_input.get())
-        self.update_field_values()
+        # self.update_field_values()
    
     def command_move_spear(self):
         controller = self.get_controller()
         controller.rotate_spear(self.hoist_input.get())
-        self.update_field_values()     
+        # self.update_field_values()     
     
     
     def update_field_values(self, event=None):
-        controller = self.get_controller()
-        self.arm_position["text"] = controller.get_appliance_height()
-        self.hoist_position["text"] = controller.get_spear_angle()
-        self.sensor_value["text"] = controller.get_ultrasonic_distance()
+        while True:
+            time.sleep(1)
+            controller = self.get_controller()
+            self.arm_position["text"] = controller.get_appliance_height()
+            self.hoist_position["text"] = controller.get_spear_angle()
+            self.sensor_value["text"] = controller.get_ultrasonic_distance()
         # self.reset_values()
 
     def reset_values(self):
         controller = self.get_controller()
         controller.reset_crane()
-        self.update_field_values()
 
         # GUI Values
         self.hoist_input.delete(0,END)
@@ -64,19 +73,19 @@ class ControlGui:
     def move_appliance_right(self):
         controller = self.get_controller()
         controller.move_appliance(1)
-        self.update_field_values()
+        # self.update_field_values()
     
     def move_appliance_left(self):
         controller = self.get_controller()
         controller.move_appliance(-1)
-        self.update_field_values()
+        # self.update_field_values()
 
     def move_spear_up(self):
         controller = self.get_controller()
         controller.rotate_spear(1)
-        self.update_field_values()
+        # self.update_field_values()
 
     def move_spear_down(self):
         controller = self.get_controller()
         controller.rotate_spear(-1)
-        self.update_field_values()
+        # self.update_field_values()

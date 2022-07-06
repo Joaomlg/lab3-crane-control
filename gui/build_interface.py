@@ -16,7 +16,7 @@ class BuildGui:
         )
         title.grid(column=column, row=row, columnspan=4)
 
-        img_arm = Image.open(self.PATH + "/gui\/images\/arm.png")
+        img_arm = Image.open(self.PATH + "/gui\/images\/hoist.png")
         img_arm = img_arm.resize((250, 250), Image.ANTIALIAS)
         img_arm = ImageTk.PhotoImage(img_arm)
         panel = ttk.Label(self.window, image=img_arm)
@@ -44,7 +44,7 @@ class BuildGui:
         )
         title.grid(column=column, row=row, columnspan=4)
 
-        img_hoist = Image.open(self.PATH + "/gui\/images\/hoist.png")
+        img_hoist = Image.open(self.PATH + "/gui\/images\/arm.png")
         img_hoist = img_hoist.resize((250, 250), Image.ANTIALIAS)
         img_hoist = ImageTk.PhotoImage(img_hoist)
         panel = ttk.Label(self.window, image=img_hoist)
