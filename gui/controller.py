@@ -54,7 +54,6 @@ class ControlGui:
         controller.rotate_spear(self.hoist_input.get())
         # self.update_field_values()     
     
-    
     def update_field_values(self, event=None):
         while True:
             time.sleep(1)
