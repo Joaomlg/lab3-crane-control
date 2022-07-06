@@ -10,7 +10,7 @@ class BuildGui:
         self.PATH = PATH
 
 
-    def build_control_arm_gui(self, row, column):
+    def build_control_arm_gui(self, row=2, column=0):
         title = ttk.Label(
             self.window, text="Arm Scale", anchor="center", font=("Arial Bold", 15)
         )
@@ -31,14 +31,20 @@ class BuildGui:
         arm_position.grid(padx=10, pady=10, column=column+1, row=row+2)
         
         # Input degress
-        ttk.Label(self.window, text="Arm Rotate Degrees").grid(column=column, row=row+4)
+        ttk.Label(self.window, text="Move Appliance").grid(column=column, row=row+4)
         arm_input = ttk.Entry(self.window, width=10)
         arm_input.grid(padx=10, pady=10, column=column+1, row=row+4)
         arm_input.insert(0, 0)
         
-        return arm_position, arm_input
+        # Input degress TO
+        ttk.Label(self.window, text="Move Appliance To").grid(column=column, row=row+5)
+        arm_input_to = ttk.Entry(self.window, width=10)
+        arm_input_to.grid(padx=10, pady=10, column=column+1, row=row+5)
+        arm_input_to.insert(0, 0)
+        
+        return arm_position, arm_input, arm_input_to
 
-    def build_control_hoist_gui(self, row, column):
+    def build_control_hoist_gui(self, row=2, column=9):
         title = ttk.Label(
             self.window, text="Hoist Scale", anchor="center", font=("Arial Bold", 15)
         )
@@ -59,12 +65,17 @@ class BuildGui:
         host_position.grid(padx=10, pady=10, column=column+1, row=row+2)
 
         # Input degress
-        ttk.Label(self.window, text="Hoist Steps").grid(column=column, row=row+4)
+        ttk.Label(self.window, text="Arm Degrees").grid(column=column, row=row+4)
         host_input = ttk.Entry(self.window, width=10)
         host_input.insert(0, 0)
         host_input.grid(padx=10, pady=10, column=column+1, row=row+4)
         
-        return host_position, host_input
+        ttk.Label(self.window, text="Arm Degrees To").grid(column=column, row=row+5)
+        host_input_to = ttk.Entry(self.window, width=10)
+        host_input_to.insert(0, 0)
+        host_input_to.grid(padx=10, pady=10, column=column+1, row=row+5)
+        
+        return host_position, host_input, host_input_to
 
     def build_slider_set(self, set_builder):
         ttk.Label(self.window, text="Simulação").grid(column=7, row=0)

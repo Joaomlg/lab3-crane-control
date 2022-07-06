@@ -6,7 +6,8 @@ from integration.CraneControllerFactory import CraneControllerFactory, Variant
 
 
 class ControlGui:
-    def __init__(self, ima_value, arm_position, arm_input, hoist_position, hoist_input, sensor_value, slider_set, title):
+    def __init__(self, ima_value, arm_position, arm_input, hoist_position, hoist_input, 
+                 sensor_value, slider_set, title, arm_input_to, host_input_to):
         self.controller_physical = CraneControllerFactory.create(Variant.Temporary)
         # self.controller_physical = CraneControllerFactory.create(Variant.Physical)
         self.controller_simulation = CraneControllerFactory.create(Variant.Temporary)
@@ -20,6 +21,8 @@ class ControlGui:
         self.sensor_value = sensor_value
         self.slider_set = slider_set
         self.title = title
+        self.arm_input_to = arm_input_to 
+        self.host_input_to = host_input_to
         # slider_set.configure(command= self.update_field_values)
 
         existsThread = next((thread for thread in threading.enumerate() if thread.name == 'thread_update_values'), False)
@@ -37,8 +40,15 @@ class ControlGui:
     def command_move_appliance(self):
         controller = self.get_controller()
         controller.move_appliance(self.arm_input.get())
-        # self.update_field_values()
-   
+    
+    def command_move_appliance_to(self):
+        controller = self.get_controller()
+        controller.move_appliance(int(self.arm_input_to.get()) - int(controller.get_appliance_height()))
+
+    def command_move_spear_to(self):
+        controller = self.get_controller()
+        controller.move_appliance(int(self.host_input_to.get()) - int(controller.get_spear_angle()))
+
     def command_move_spear(self):
         controller = self.get_controller()
         controller.rotate_spear(self.hoist_input.get())
