@@ -5,7 +5,7 @@ import integration.zmqRemoteApi as zmqRemoteApi
 # import zmqRemoteApi as zmqRemoteApi # TO remove
 import time
 
-VELOCITY_SPEAR = .25
+VELOCITY_SPEAR = .05
 VELOCITY_APPLIANCE = .015
 SIMULATION_DISTANCE = 43
 REAL_DISTANCE = 27
