@@ -1,18 +1,18 @@
 import math
-# from integration.ICraneController import ICraneController
-from ICraneController import ICraneController # TO remove
-import zmqRemoteApi as zmqRemoteApi # TO remove
+from integration.ICraneController import ICraneController
+import integration.zmqRemoteApi as zmqRemoteApi
+# from ICraneController import ICraneController # TO remove
+# import zmqRemoteApi as zmqRemoteApi # TO remove
 import time
 
 VELOCITY_SPEAR = .25
 VELOCITY_APPLIANCE = .015
-SIMULATION_DISTANCE = 42
+SIMULATION_DISTANCE = 43
 REAL_DISTANCE = 27
 
 class SimulatedCraneController(ICraneController):
   def __init__(self):
     try : 
-      # import integration.zmqRemoteApi as zmqRemoteApi
       self.sim = zmqRemoteApi.RemoteAPIClient().getObject('sim')
       print("Connected to simulation")
     except :
@@ -28,12 +28,15 @@ class SimulatedCraneController(ICraneController):
 
   def reset_crane(self) -> None:
     self.sim.stopSimulation()
+    time.sleep(2)
     self.sim.startSimulation()
     self.spear_angle = .0
     self.appliance_height = .0
     self.eletromagnatic_state = False
 
   def rotate_spear(self, degrees: float) -> None:
+    # TODO: fix problem to ratate mora than 360º
+    degrees = float(degrees)
     multiplier = 1
     if degrees < 0:
       multiplier = -1
@@ -49,9 +52,13 @@ class SimulatedCraneController(ICraneController):
         break
 
     self.sim.setJointTargetVelocity(self.spear, 0)
+    position = self.sim.getJointPosition(self.spear)
+    self.spear_angle = position*180/math.pi
+
 
   def move_appliance(self, height: float) -> None:
     multiplier = 0
+    height = float(height)
     height = height/100 * SIMULATION_DISTANCE/REAL_DISTANCE
     position = -1 * self.sim.getJointPosition(self.app)
     target_position = position + height*-1
@@ -64,7 +71,7 @@ class SimulatedCraneController(ICraneController):
 
     while True:
       position = -1 * self.sim.getJointPosition(self.app)
-      if (multiplier == -1 and position > target_position) or (multiplier == 1 and position < target_position):
+      if (multiplier == -1 and (position > target_position or position > SIMULATION_DISTANCE/100)) or (multiplier == 1 and position < target_position or position <= 0):
         break
 
     self.sim.setJointTargetVelocity(self.app, 0)
@@ -75,7 +82,8 @@ class SimulatedCraneController(ICraneController):
 
   def toggle_electromagnet(self, state: bool) -> None:
     self.eletromagnatic_state = state
-    self.sim.pushUserEvent("toggleEletromagnet", -1, -1, {"state": state})
+    message = state == 1
+    self.sim.pushUserEvent("toggleEletromagnet", -1, -1, {"state": message})
 
   def get_spear_angle(self) -> float:
     return self.spear_angle
@@ -88,11 +96,11 @@ class SimulatedCraneController(ICraneController):
   
   def get_ultrasonic_distance(self) -> float:
     data = self.sim.readProximitySensor(self.sensor)
-    return data[1]
+    return data[1] * 100 * REAL_DISTANCE/SIMULATION_DISTANCE
 
 if __name__ == "__main__":
   pass
-  # simulatedCrane = SimulatedCraneController()
+  simulatedCrane = SimulatedCraneController()
   # Active eletromagnetic
   # time.sleep(1)
   # simulatedCrane.toggle_electromagnet(True)
@@ -117,10 +125,11 @@ if __name__ == "__main__":
   # time.sleep(1)
   # simulatedCrane.rotate_spear(270)
 
+  # Challenger
   # simulatedCrane.toggle_electromagnet(True)
-  # simulatedCrane.move_appliance(-23.2)
+  # simulatedCrane.move_appliance(-26.61)
   # time.sleep(1)
-  # simulatedCrane.move_appliance(23)
+  # simulatedCrane.move_appliance(26.61)
   # simulatedCrane.rotate_spear(90)
   # simulatedCrane.toggle_electromagnet(False)
 
