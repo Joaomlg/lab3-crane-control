@@ -8,8 +8,8 @@ from integration.CraneControllerFactory import CraneControllerFactory, Variant
 class ControlGui:
     def __init__(self, ima_value, arm_position, arm_input, hoist_position, hoist_input, 
                  sensor_value, slider_set, title, arm_input_to, host_input_to, object_height):
-        self.controller_physical = CraneControllerFactory.create(Variant.Temporary)
-        # self.controller_physical = CraneControllerFactory.create(Variant.Physical)
+        # self.controller_physical = CraneControllerFactory.create(Variant.Temporary)
+        self.controller_physical = CraneControllerFactory.create(Variant.Physical)
         self.controller_simulation = CraneControllerFactory.create(Variant.Temporary)
         # self.controller_simulation = CraneControllerFactory.create(Variant.Simulation)
 
@@ -48,7 +48,7 @@ class ControlGui:
 
     def command_move_spear_to(self):
         controller = self.get_controller()
-        controller.move_appliance(float(self.host_input_to.get()) - float(controller.get_spear_angle()))
+        controller.rotate_spear(float(self.host_input_to.get()) - float(controller.get_spear_angle()))
 
     def command_move_spear(self):
         controller = self.get_controller()
