@@ -87,7 +87,7 @@ def create_gui():
     )
     btn_rotate_spear.grid(column=9, row=10)
     btn_rotate_spear_to = ttk.Button(
-        window, text="Rotate Spear", command=controller.command_move_spear_to, bootstyle=SUCCESS
+        window, text="Rotate Spear To", command=controller.command_move_spear_to, bootstyle=SUCCESS
     )
     btn_rotate_spear_to.grid(column=10, row=10)
     
